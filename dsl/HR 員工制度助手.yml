@@ -1,0 +1,242 @@
+app:
+  description: ''
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  icon_type: emoji
+  mode: advanced-chat
+  name: HR 員工制度助手
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/gemini:0.9.3@f34e3e2c5f1dea8bae213af7c1aa553849366f78c65040d75bd5a1d20caeeba9
+    version: null
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/groq:0.0.17@f042c19aec5896e2141909194c463f8ea4cb2326f5bdc51afbfb6542e6b4bcd8
+    version: null
+kind: app
+version: 0.6.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        attachment_image_file_size_limit: 2
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        file_upload_limit: 50
+        image_file_batch_limit: 10
+        image_file_size_limit: 10
+        single_chunk_attachment_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: '您好，我是 HR 員工制度助手。
+
+
+      我可以協助查詢請假與出勤、員工福利，以及新進員工報到流程。
+
+      我會依據公司知識庫回答；若問題涉及薪資、個資、帳號權限或勞資爭議，請聯絡 HR 或相關負責單位確認。'
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions:
+    - 請問交通補助怎麼申請？
+    - 病假超過幾天需要醫療證明？
+    - 新進員工報到需要攜帶什麼？
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        sourceType: llm
+        targetType: answer
+      id: llm-answer
+      source: llm
+      sourceHandle: source
+      target: answer
+      targetHandle: target
+      type: custom
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: knowledge-retrieval
+      id: 1785272578935-source-1785272707884-target
+      source: '1785272578935'
+      sourceHandle: source
+      target: '1785272707884'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: knowledge-retrieval
+        targetType: llm
+      id: 1785272707884-source-llm-target
+      source: '1785272707884'
+      sourceHandle: source
+      target: llm
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        selected: false
+        title: 開始
+        type: start
+        variables: []
+      height: 71
+      id: '1785272578935'
+      position:
+        x: 80
+        y: 282
+      positionAbsolute:
+        x: 80
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - '1785272707884'
+          - result
+        memory:
+          query_prompt_template: '{{#sys.query#}}
+
+
+            {{#sys.files#}}'
+          role_prefix:
+            assistant: ''
+            user: ''
+          window:
+            enabled: false
+            size: 10
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: openai/gpt-oss-120b
+          provider: langgenius/groq/groq
+        prompt_template:
+        - id: 0e86311a-8005-4f44-9d84-95d1a08eff60
+          role: system
+          text: "你是公司內部 HR 員工制度助手。\n\n請根據下方提供的「參考資料」回答使用者問題。\n\n回答規則：\n1. 只能依據參考資料回答，不可猜測或自行補充。\n\
+            2. 如果參考資料不足、沒有提到，請回答：\n「目前知識庫沒有足夠資訊，請聯絡 HR 人員確認。」\n3. 若問題涉及其他員工的薪資、獎金、績效、個人資料、帳號權限、\n\
+            勞資爭議或法律意見，請回答：\n「此問題涉及個人資料、薪資或公司權限，無法由系統提供，請聯絡 HR 或相關負責單位確認。」\n4. 請使用繁體中文，回答保持簡潔。\n\
+            5. \n重要：不得省略與問題直接相關的條件。\n例如，若參考資料提到交通補助，回答必須同時說明：\n- 每月上限為新台幣 1,500 元\n\
+            - 申請時須檢附相關憑證\n不得舉出參考資料沒有明確提到的例子、金額、期限或流程；不得以常識補充公司規定。\n\n\n參考資料：{{#context#}}"
+        selected: false
+        title: LLM
+        type: llm
+        vision:
+          enabled: false
+      height: 86
+      id: llm
+      position:
+        x: 680
+        y: 282
+      positionAbsolute:
+        x: 680
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        answer: '{{#llm.text#}}'
+        selected: false
+        title: 直接回覆
+        type: answer
+        variables: []
+      height: 101
+      id: answer
+      position:
+        x: 980
+        y: 282
+      positionAbsolute:
+        x: 980
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        dataset_ids:
+        - T1qBSBwIJ9Wqoc99SK3AoguWE86w6DhpDSxTDVAAS6JvqsfCNpiKkbsO0RW2RGO4
+        multiple_retrieval_config:
+          reranking_enable: false
+          reranking_mode: weighted_score
+          top_k: 4
+          weights:
+            keyword_setting:
+              keyword_weight: 0
+            vector_setting:
+              embedding_model_name: gemini-embedding-001
+              embedding_provider_name: langgenius/gemini/google
+              vector_weight: 1
+            weight_type: customized
+        query_attachment_selector: []
+        query_variable_selector:
+        - '1785272578935'
+        - sys.query
+        retrieval_mode: multiple
+        selected: false
+        title: 知識檢索
+        type: knowledge-retrieval
+      height: 88
+      id: '1785272707884'
+      position:
+        x: 380
+        y: 282
+      positionAbsolute:
+        x: 380
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    viewport:
+      x: -24.5
+      y: 129.3571428571429
+      zoom: 1
+  rag_pipeline_variables: []
