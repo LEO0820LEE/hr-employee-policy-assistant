@@ -68,7 +68,7 @@
 
 採用 **Dify Chatflow** 設計，流程邏輯如下：
 
-```text
+
 [ Start: 使用者輸入 Query ]
            │
            ▼
